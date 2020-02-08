@@ -5,6 +5,7 @@
   "version": "0.1.0",
   "author": "Kyle Mathews <mathews.kyle@gmail.com>",
   "dependencies": {
+    "@react-google-maps/api": "^1.8.3",
     "axios": "^0.19.2",
     "gatsby": "^2.19.7",
     "gatsby-image": "^2.2.39",
@@ -17,7 +18,6 @@
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "react-google-maps": "^9.4.5",
     "react-helmet": "^5.2.1",
     "recompose": "^0.30.0"
   },
