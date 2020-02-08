@@ -2,34 +2,21 @@
     min-height: 100vh;
 }
 
-.home-images-container {
-    width: 800px;
-    margin: 0 auto;
+.road-image{
+    background-image: url("../images/road.svg");
+    height: 800px;
+    width: 1000px;
+    background-repeat: no-repeat;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
 }
 
-.home-small-image {
-    position: fixed;
-    top: 50px;
-    left: 50px;
-    width: 200px;
-}
-.road-image{
-    position: fixed;
-    left: 30px;
-    width: 750px;
-}
-.dest-small-image {
-    position: fixed;
-    width: 200px;
-    top: 400px;
-    left: 500px;
-}
 .go-button {
-    position: fixed;
-    top: 270px;
-    left: 280px;
-    width: 80px;
-    height: 40px;
+    position: relative;
+    top: 45%;
+    left: 45%;
     font-family: "Palatino", serif;
     border-style: none;
     font-size: 70px;
@@ -37,13 +24,13 @@
 }
 
 .origin-input{
-    position: fixed;
-    top: 200px;
-    left: 100px;
+    position: relative;
+    top: 30%;
+    left: 13%;
 }
 
 .dest-input{
-    position: fixed;
-    top: 530px;
-    left: 620px;
+    position: relative;
+    top: 75%;
+    left: 50%;
 }
