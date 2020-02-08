@@ -21,7 +21,7 @@ const ZERO_C_AS_KELVIN = 273.1
 const Overlay = ({ position, weatherResp }) => {
   return (
     <OverlayView
-      position={position}
+      position={{ lat: weatherResp.coord.lat, lng: weatherResp.coord.lon }}
       mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
     >
       <div
@@ -33,12 +33,13 @@ const Overlay = ({ position, weatherResp }) => {
           padding: "0.5rem",
           paddingRight: "1.2rem",
           backgroundColor: "white",
+          boxShadow: "var(--shadow)",
         }}
       >
         <div
           style={{
             padding: "0.25rem",
-            backgroundColor: "var(--red-500)",
+            backgroundColor: "var(--blue-500)",
             borderRadius: "9999px",
             boxShadow: "var(--shadow)",
           }}
@@ -69,14 +70,21 @@ const Overlay = ({ position, weatherResp }) => {
   )
 }
 
+const cities = ["Abbotsford", "Chilliwack", "Hope", "Kamloops"]
+
 const MapPage = () => {
   const [state, setState] = React.useContext(GlobalStateContext)
   const [weatherLoadState, setWeatherLoadState] = React.useState("loading")
   const [weatherInfo, setWeatherInfo] = React.useState({
     start: null,
     end: null,
+    rest: [],
   })
   const [response, setResponse] = React.useState(null)
+
+  React.useEffect(() => {
+    console.log(weatherInfo)
+  }, [weatherInfo])
 
   React.useEffect(() => {
     const start = axios(
@@ -105,7 +113,17 @@ const MapPage = () => {
         setWeatherInfo(info => ({ ...info, end: data }))
       })
 
-    Promise.all([start, end]).then(() => setWeatherLoadState("loaded"))
+    const rest = cities.map(city =>
+      axios(
+        `https://api.openweathermap.org/data/2.5/weather?q=${city},BC,CA&appid=${weatherApiKey}`
+      )
+        .then(response => response.data)
+        .then(data =>
+          setWeatherInfo(info => ({ ...info, rest: [...info.rest, data] }))
+        )
+    )
+
+    Promise.all([start, end, ...rest]).then(() => setWeatherLoadState("loaded"))
   }, [setState])
 
   const directionsCallback = React.useCallback(response => {
@@ -141,6 +159,12 @@ const MapPage = () => {
               position={state.endLocation}
               weatherResp={weatherInfo.end}
             />
+            {weatherInfo.rest.map(data => (
+              <Overlay
+                position={{ lat: data.coord.lat, lng: data.coord.lon }}
+                weatherResp={data}
+              />
+            ))}
             <DirectionsService
               options={{
                 destination: state.endLocation,
