@@ -13,18 +13,37 @@
     left: 50px;
     width: 200px;
 }
-
+.road-image{
+    position: fixed;
+    left: 30px;
+    width: 750px;
+}
 .dest-small-image {
     position: fixed;
     width: 200px;
     top: 400px;
-    left: 400px;
+    left: 500px;
 }
 .go-button {
     position: fixed;
-    top: 300px;
-    left: 300px;
+    top: 270px;
+    left: 280px;
     width: 80px;
     height: 40px;
     font-family: "Palatino", serif;
+    border-style: none;
+    font-size: 70px;
+    background-color:transparent;
+}
+
+.origin-input{
+    position: fixed;
+    top: 200px;
+    left: 100px;
+}
+
+.dest-input{
+    position: fixed;
+    top: 530px;
+    left: 620px;
 }
