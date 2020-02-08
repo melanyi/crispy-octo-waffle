@@ -8,5 +8,23 @@
 }
 
 .home-small-image {
+    position: fixed;
+    top: 50px;
+    left: 50px;
     width: 200px;
+}
+
+.dest-small-image {
+    position: fixed;
+    width: 200px;
+    top: 400px;
+    left: 400px;
+}
+.go-button {
+    position: fixed;
+    top: 300px;
+    left: 300px;
+    width: 80px;
+    height: 40px;
+    font-family: "Palatino", serif;
 }

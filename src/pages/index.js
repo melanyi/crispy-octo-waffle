@@ -12,7 +12,10 @@ const IndexPage = () => (
     <div className="home-content">
       <div className="home-images-container flex">
         <img className="home-small-image" alt="home" src={carSvg} />
-        <img className="home-small-image" alt="park" src={parkSvg} />
+        <img className="dest-small-image" alt="park" src={parkSvg} />
+        <a href = "/map">
+        <button className = "go-button">Go!</button>
+        </a>
       </div>
     </div>
   </Layout>
