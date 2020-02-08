@@ -1,15 +1,14 @@
 import React from "react"
 
-const GlobalStateContext = React.createContext({
-  startLocation: { lat: undefined, lon: undefined },
-  endLocation: { lat: undefined, lon: undefined },
-})
+const initalState = {
+  startLocation: { lat: 0, lon: 0 },
+  endLocation: { lat: 0, lon: 0 },
+}
+
+const GlobalStateContext = React.createContext(initalState)
 
 export const GlobalStateProvider = ({ children }) => {
-  const appState = React.useState({
-    startLocation: { lat: 49.259998, lon: -123.110001 },
-    endLocation: { lat: 49.259998, lon: -123.110001 },
-  })
+  const appState = React.useState(initalState)
 
   return (
     <GlobalStateContext.Provider value={appState}>
