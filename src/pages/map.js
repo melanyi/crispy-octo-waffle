@@ -18,17 +18,19 @@ const mapsApiKey = "AIzaSyBXk6lGDtJyh1GIfe71spYt9vvKe0bnwbw"
 
 const ZERO_C_AS_KELVIN = 273.1
 
-const Overlay = ({ position, weatherResp }) => {
+const Overlay = ({ weatherResp, selectCallback = () => {} }) => {
   return (
     <OverlayView
       position={{ lat: weatherResp.coord.lat, lng: weatherResp.coord.lon }}
       mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
     >
-      <div
+      <button
+        type="button"
+        onClick={() => selectCallback(weatherResp)}
+        className="reset-button"
         style={{
           display: "flex",
           alignItems: "center",
-          transform: "translate(-50%, -50%)",
           borderRadius: "9999px",
           padding: "0.5rem",
           paddingRight: "1.2rem",
@@ -65,12 +67,20 @@ const Overlay = ({ position, weatherResp }) => {
           </div>
           <div>{weatherResp.name}</div>
         </div>
-      </div>
+      </button>
     </OverlayView>
   )
 }
 
-const cities = ["Abbotsford", "Chilliwack", "Hope", "Kamloops"]
+const cities = [
+  "Burnaby",
+  "Surrey",
+  "Langley",
+  "Abbotsford",
+  "Chilliwack",
+  "Hope",
+  "Kamloops",
+]
 
 const MapPage = () => {
   const [state, setState] = React.useContext(GlobalStateContext)
@@ -101,7 +111,7 @@ const MapPage = () => {
       })
 
     const end = axios(
-      `https://api.openweathermap.org/data/2.5/weather?q=Seattle,WA,US&appid=${weatherApiKey}`
+      `https://api.openweathermap.org/data/2.5/weather?q=Banff,BC,CA&appid=${weatherApiKey}`
     )
       .then(response => response.data)
       .then(data => {
@@ -145,22 +155,15 @@ const MapPage = () => {
         <LoadScript id="script-loader" googleMapsApiKey={mapsApiKey}>
           <GoogleMap
             id="example-map"
-            zoom={8}
+            zoom={10}
             center={state.startLocation}
-            mapContainerStyle={{
-              height: "100vh",
-            }}
+            mapContainerStyle={{ height: "100vh" }}
           >
-            <Overlay
-              position={state.startLocation}
-              weatherResp={weatherInfo.start}
-            />
-            <Overlay
-              position={state.endLocation}
-              weatherResp={weatherInfo.end}
-            />
+            <Overlay weatherResp={weatherInfo.start} />
+            <Overlay weatherResp={weatherInfo.end} />
             {weatherInfo.rest.map(data => (
               <Overlay
+                key={data.id}
                 position={{ lat: data.coord.lat, lng: data.coord.lon }}
                 weatherResp={data}
               />
