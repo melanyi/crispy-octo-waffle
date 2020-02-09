@@ -1,4 +1,5 @@
 import React from "react"
+import { useStaticQuery, graphql } from "gatsby"
 import axios from "axios"
 import {
   DirectionsService,
@@ -18,17 +19,19 @@ const mapsApiKey = "AIzaSyBXk6lGDtJyh1GIfe71spYt9vvKe0bnwbw"
 
 const ZERO_C_AS_KELVIN = 273.1
 
-const Overlay = ({ position, weatherResp }) => {
+const Overlay = ({ weatherResp, selectCallback = () => {} }) => {
   return (
     <OverlayView
       position={{ lat: weatherResp.coord.lat, lng: weatherResp.coord.lon }}
       mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
     >
-      <div
+      <button
+        type="button"
+        onClick={() => selectCallback(weatherResp)}
+        className="reset-button"
         style={{
           display: "flex",
           alignItems: "center",
-          transform: "translate(-50%, -50%)",
           borderRadius: "9999px",
           padding: "0.5rem",
           paddingRight: "1.2rem",
@@ -50,29 +53,30 @@ const Overlay = ({ position, weatherResp }) => {
             src={`http://openweathermap.org/img/wn/${weatherResp.weather[0].icon}@2x.png`}
           />
         </div>
-        <div
-          style={{
-            marginLeft: "0.25rem",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "1.25rem",
-              fontWeight: "bold",
-            }}
-          >
+        <div style={{ marginLeft: "0.25rem" }}>
+          <div style={{ fontSize: "1.25rem", fontWeight: "bold" }}>
             {Math.round(weatherResp.main.temp - ZERO_C_AS_KELVIN)}&deg;C
           </div>
           <div>{weatherResp.name}</div>
         </div>
-      </div>
+      </button>
     </OverlayView>
   )
 }
 
-const cities = ["Abbotsford", "Chilliwack", "Hope", "Kamloops"]
-
 const MapPage = () => {
+  const data = useStaticQuery(graphql`
+    {
+      allCitiesJson {
+        edges {
+          node {
+            name
+          }
+        }
+      }
+    }
+  `)
+
   const [state, setState] = React.useContext(GlobalStateContext)
   const [weatherLoadState, setWeatherLoadState] = React.useState("loading")
   const [weatherInfo, setWeatherInfo] = React.useState({
@@ -84,7 +88,8 @@ const MapPage = () => {
 
   React.useEffect(() => {
     console.log(weatherInfo)
-  }, [weatherInfo])
+    console.log(state)
+  }, [weatherInfo, state])
 
   React.useEffect(() => {
     const start = axios(
@@ -101,7 +106,7 @@ const MapPage = () => {
       })
 
     const end = axios(
-      `https://api.openweathermap.org/data/2.5/weather?q=Seattle,WA,US&appid=${weatherApiKey}`
+      `https://api.openweathermap.org/data/2.5/weather?q=Banff,BC,CA&appid=${weatherApiKey}`
     )
       .then(response => response.data)
       .then(data => {
@@ -113,9 +118,9 @@ const MapPage = () => {
         setWeatherInfo(info => ({ ...info, end: data }))
       })
 
-    const rest = cities.map(city =>
+    const rest = data.allCitiesJson.edges.slice(0, 10).map(({node}) =>
       axios(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city},BC,CA&appid=${weatherApiKey}`
+        `https://api.openweathermap.org/data/2.5/weather?q=${node.name},BC,CA&appid=${weatherApiKey}`
       )
         .then(response => response.data)
         .then(data =>
@@ -141,44 +146,52 @@ const MapPage = () => {
   return (
     <Layout>
       <SEO title="Map" />
-      {weatherLoadState === "loaded" && (
-        <LoadScript id="script-loader" googleMapsApiKey={mapsApiKey}>
-          <GoogleMap
-            id="example-map"
-            zoom={8}
-            center={state.startLocation}
-            mapContainerStyle={{
-              height: "100vh",
-            }}
-          >
-            <Overlay
-              position={state.startLocation}
-              weatherResp={weatherInfo.start}
-            />
-            <Overlay
-              position={state.endLocation}
-              weatherResp={weatherInfo.end}
-            />
-            {weatherInfo.rest.map(data => (
-              <Overlay
-                position={{ lat: data.coord.lat, lng: data.coord.lon }}
-                weatherResp={data}
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+      ></link>
+      <div className="home-content">
+        <div className="navbar">
+          <a className="active" href="/">
+            <i className="fa fa-fw fa-home"></i> Home
+          </a>
+          <a className="active" href="/city-list">
+            <i className="fa fa-fw fa-search"></i> All Weathers
+          </a>
+        </div>
+
+        {weatherLoadState === "loaded" && (
+          <LoadScript id="script-loader" googleMapsApiKey={mapsApiKey}>
+            <GoogleMap
+              id="example-map"
+              zoom={10}
+              center={state.startLocation}
+              mapContainerStyle={{ height: "100vh" }}
+            >
+              <Overlay weatherResp={weatherInfo.start} />
+              <Overlay weatherResp={weatherInfo.end} />
+              {weatherInfo.rest.map(data => (
+                <Overlay
+                  key={data.id}
+                  position={{ lat: data.coord.lat, lng: data.coord.lon }}
+                  weatherResp={data}
+                />
+              ))}
+              <DirectionsService
+                options={{
+                  destination: state.endLocation,
+                  origin: state.startLocation,
+                  travelMode: "DRIVING",
+                }}
+                callback={directionsCallback}
               />
-            ))}
-            <DirectionsService
-              options={{
-                destination: state.endLocation,
-                origin: state.startLocation,
-                travelMode: "DRIVING",
-              }}
-              callback={directionsCallback}
-            />
-            {response && (
-              <DirectionsRenderer options={{ directions: response }} />
-            )}
-          </GoogleMap>
-        </LoadScript>
-      )}
+              {response && (
+                <DirectionsRenderer options={{ directions: response }} />
+              )}
+            </GoogleMap>
+          </LoadScript>
+        )}
+      </div>
     </Layout>
   )
 }
