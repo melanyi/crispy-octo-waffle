@@ -5,7 +5,7 @@
 .road-image{
     background-image: url("../images/road.svg");
     height: 800px;
-    width: 1000px;
+    background-position: center center;
     background-repeat: no-repeat;
     display: block;
     margin-left: auto;
@@ -15,8 +15,8 @@
 
 .go-button {
     position: relative;
-    top: 45%;
-    left: 45%;
+    top: 300px;
+    margin-left: 45%;
     font-family: "Palatino", serif;
     border-style: none;
     font-size: 70px;
@@ -45,12 +45,32 @@
 
 .origin-input{
     position: relative;
-    top: 30%;
-    left: 13%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    top: 5%;
+    
 }
 
 .dest-input{
     position: relative;
-    top: 75%;
-    left: 50%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    top: 10%;
 }
+
+input[type=text] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 3px solid #ccc;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline: none;
+  }
+  
+  input[type=text]:focus {
+    border: 3px solid darkgreen;
+  }

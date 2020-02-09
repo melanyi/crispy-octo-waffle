@@ -14,7 +14,7 @@ const IndexPage = () => (
           <button className = "go-button">Go!</button>
           </a>
           <input className="origin-input" type="text" name="origin"></input>
-          <input className="dest-input" type="text" name="destination"></input>   
+          <input className="dest-input" type="text" name="destination"></input>          
         </div>
       </div>
     </div>
