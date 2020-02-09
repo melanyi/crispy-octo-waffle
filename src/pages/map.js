@@ -141,44 +141,54 @@ const MapPage = () => {
   return (
     <Layout>
       <SEO title="Map" />
-      {weatherLoadState === "loaded" && (
-        <LoadScript id="script-loader" googleMapsApiKey={mapsApiKey}>
-          <GoogleMap
-            id="example-map"
-            zoom={8}
-            center={state.startLocation}
-            mapContainerStyle={{
-              height: "100vh",
-            }}
-          >
-            <Overlay
-              position={state.startLocation}
-              weatherResp={weatherInfo.start}
-            />
-            <Overlay
-              position={state.endLocation}
-              weatherResp={weatherInfo.end}
-            />
-            {weatherInfo.rest.map(data => (
-              <Overlay
-                position={{ lat: data.coord.lat, lng: data.coord.lon }}
-                weatherResp={data}
-              />
-            ))}
-            <DirectionsService
-              options={{
-                destination: state.endLocation,
-                origin: state.startLocation,
-                travelMode: "DRIVING",
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
+      <div className="home-content">
+        <div class="navbar">
+          <a class="active" href="/"><i class="fa fa-fw fa-home"></i> Home</a>
+          <a class="active" href="/city-list"><i class="fa fa-fw fa-search"></i> All Weathers</a>
+        </div>
+
+        {weatherLoadState === "loaded" && (
+          <LoadScript id="script-loader" googleMapsApiKey={mapsApiKey}>
+            <GoogleMap
+              id="example-map"
+              zoom={8}
+              center={state.startLocation}
+              mapContainerStyle={{
+                height: "100vh",
               }}
-              callback={directionsCallback}
-            />
-            {response && (
-              <DirectionsRenderer options={{ directions: response }} />
-            )}
-          </GoogleMap>
-        </LoadScript>
-      )}
+            >
+              <Overlay
+                position={state.startLocation}
+                weatherResp={weatherInfo.start}
+              />
+              <Overlay
+                position={state.endLocation}
+                weatherResp={weatherInfo.end}
+              />
+              {weatherInfo.rest.map(data => (
+                <Overlay
+                  position={{ lat: data.coord.lat, lng: data.coord.lon }}
+                  weatherResp={data}
+                />
+              ))}
+              <DirectionsService
+                options={{
+                  destination: state.endLocation,
+                  origin: state.startLocation,
+                  travelMode: "DRIVING",
+                }}
+                callback={directionsCallback}
+              />
+              {response && (
+                <DirectionsRenderer options={{ directions: response }} />
+              )}
+            </GoogleMap>
+          </LoadScript>
+
+        )}
+      </div>
+
     </Layout>
   )
 }

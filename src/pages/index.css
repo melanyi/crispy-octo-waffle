@@ -49,7 +49,6 @@
     margin-left: auto;
     margin-right: auto;
     top: 5%;
-    
 }
 
 .dest-input{
@@ -73,4 +72,40 @@ input[type=text] {
   
   input[type=text]:focus {
     border: 3px solid darkgreen;
+}
+
+
+.navbar {
+    width: 100%;
+    background-color: #555;
+    overflow: auto;
+  }
+  
+  /* Navbar links */
+  .navbar a {
+    background-color: #4CAF50;
+    float: left;
+    text-align: center;
+    padding: 12px;
+    color: white;
+    text-decoration: none;
+    font-size: 17px;
+  }
+  
+  /* Navbar links on mouse-over */
+  .navbar a:hover {
+    background-color: #000;
+  }
+  
+  /* Current/active navbar link */
+  .active {
+    background-color: #4CAF50;
+  }
+  
+  /* Add responsiveness - will automatically display the navbar vertically instead of horizontally on screens less than 500 pixels */
+  @media screen and (max-width: 500px) {
+    .navbar a {
+      float: none;
+      display: block;
+    }
   }
