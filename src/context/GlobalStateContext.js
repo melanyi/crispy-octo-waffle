@@ -3,6 +3,8 @@ import React from "react"
 const initalState = {
   startLocation: { lat: 0, lon: 0 },
   endLocation: { lat: 0, lon: 0 },
+  originValue: "",
+  destValue: "",
 }
 
 const GlobalStateContext = React.createContext(initalState)

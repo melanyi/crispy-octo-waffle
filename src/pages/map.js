@@ -1,4 +1,5 @@
 import React from "react"
+import { useStaticQuery, graphql } from "gatsby"
 import axios from "axios"
 import {
   DirectionsService,
@@ -52,17 +53,8 @@ const Overlay = ({ weatherResp, selectCallback = () => {} }) => {
             src={`http://openweathermap.org/img/wn/${weatherResp.weather[0].icon}@2x.png`}
           />
         </div>
-        <div
-          style={{
-            marginLeft: "0.25rem",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "1.25rem",
-              fontWeight: "bold",
-            }}
-          >
+        <div style={{ marginLeft: "0.25rem" }}>
+          <div style={{ fontSize: "1.25rem", fontWeight: "bold" }}>
             {Math.round(weatherResp.main.temp - ZERO_C_AS_KELVIN)}&deg;C
           </div>
           <div>{weatherResp.name}</div>
@@ -72,17 +64,19 @@ const Overlay = ({ weatherResp, selectCallback = () => {} }) => {
   )
 }
 
-const cities = [
-  "Burnaby",
-  "Surrey",
-  "Langley",
-  "Abbotsford",
-  "Chilliwack",
-  "Hope",
-  "Kamloops",
-]
-
 const MapPage = () => {
+  const data = useStaticQuery(graphql`
+    {
+      allCitiesJson {
+        edges {
+          node {
+            name
+          }
+        }
+      }
+    }
+  `)
+
   const [state, setState] = React.useContext(GlobalStateContext)
   const [weatherLoadState, setWeatherLoadState] = React.useState("loading")
   const [weatherInfo, setWeatherInfo] = React.useState({
@@ -94,7 +88,8 @@ const MapPage = () => {
 
   React.useEffect(() => {
     console.log(weatherInfo)
-  }, [weatherInfo])
+    console.log(state)
+  }, [weatherInfo, state])
 
   React.useEffect(() => {
     const start = axios(
@@ -123,9 +118,9 @@ const MapPage = () => {
         setWeatherInfo(info => ({ ...info, end: data }))
       })
 
-    const rest = cities.map(city =>
+    const rest = data.allCitiesJson.edges.slice(0, 10).map(({node}) =>
       axios(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city},BC,CA&appid=${weatherApiKey}`
+        `https://api.openweathermap.org/data/2.5/weather?q=${node.name},BC,CA&appid=${weatherApiKey}`
       )
         .then(response => response.data)
         .then(data =>
@@ -177,6 +172,7 @@ const MapPage = () => {
               <Overlay weatherResp={weatherInfo.end} />
               {weatherInfo.rest.map(data => (
                 <Overlay
+                  key={data.id}
                   position={{ lat: data.coord.lat, lng: data.coord.lon }}
                   weatherResp={data}
                 />
