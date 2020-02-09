@@ -151,37 +151,51 @@ const MapPage = () => {
   return (
     <Layout>
       <SEO title="Map" />
-      {weatherLoadState === "loaded" && (
-        <LoadScript id="script-loader" googleMapsApiKey={mapsApiKey}>
-          <GoogleMap
-            id="example-map"
-            zoom={10}
-            center={state.startLocation}
-            mapContainerStyle={{ height: "100vh" }}
-          >
-            <Overlay weatherResp={weatherInfo.start} />
-            <Overlay weatherResp={weatherInfo.end} />
-            {weatherInfo.rest.map(data => (
-              <Overlay
-                key={data.id}
-                position={{ lat: data.coord.lat, lng: data.coord.lon }}
-                weatherResp={data}
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+      ></link>
+      <div className="home-content">
+        <div className="navbar">
+          <a className="active" href="/">
+            <i className="fa fa-fw fa-home"></i> Home
+          </a>
+          <a className="active" href="/city-list">
+            <i className="fa fa-fw fa-search"></i> All Weathers
+          </a>
+        </div>
+
+        {weatherLoadState === "loaded" && (
+          <LoadScript id="script-loader" googleMapsApiKey={mapsApiKey}>
+            <GoogleMap
+              id="example-map"
+              zoom={10}
+              center={state.startLocation}
+              mapContainerStyle={{ height: "100vh" }}
+            >
+              <Overlay weatherResp={weatherInfo.start} />
+              <Overlay weatherResp={weatherInfo.end} />
+              {weatherInfo.rest.map(data => (
+                <Overlay
+                  position={{ lat: data.coord.lat, lng: data.coord.lon }}
+                  weatherResp={data}
+                />
+              ))}
+              <DirectionsService
+                options={{
+                  destination: state.endLocation,
+                  origin: state.startLocation,
+                  travelMode: "DRIVING",
+                }}
+                callback={directionsCallback}
               />
-            ))}
-            <DirectionsService
-              options={{
-                destination: state.endLocation,
-                origin: state.startLocation,
-                travelMode: "DRIVING",
-              }}
-              callback={directionsCallback}
-            />
-            {response && (
-              <DirectionsRenderer options={{ directions: response }} />
-            )}
-          </GoogleMap>
-        </LoadScript>
-      )}
+              {response && (
+                <DirectionsRenderer options={{ directions: response }} />
+              )}
+            </GoogleMap>
+          </LoadScript>
+        )}
+      </div>
     </Layout>
   )
 }
